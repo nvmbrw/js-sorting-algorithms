@@ -7,23 +7,42 @@ function split(wholeArray) {
 
 function merge(arr1, arr2) {
   let mergedArr = [];
-  while (arr2.length && arr1.length) {
-    arr1[0] > arr2[0]
-      ? mergedArr.push(arr2.shift())
-      : mergedArr.push(arr1.shift());
+  let i = 0;
+  let j = 0;
+  while (i < arr1.length && j < arr2.length) {
+    if (arr1[i] > arr2[j]) {
+      mergedArr.push(arr2[j]);
+      j++;
+    } else {
+      mergedArr.push(arr1[i]);
+      i++;
+    }
   }
-
-  arr1.length ? mergedArr.concat(arr1) : (mergedArr = mergedArr.concat(arr2));
-
-  return mergedArr;
+  /*
+    [1, 2, 3] [4, 5, 6]
+          i^     j^
+    arr2.slice(j) === [6]
+  */
+  if (i < arr1.length) {
+    return mergedArr.concat(arr1.slice(i));
+  } else {
+    return mergedArr.concat(arr2.slice(j));
+  }
 }
 
 function mergeSort(array) {
   let firstHalf = split(array)[0];
   let secondHalf = split(array)[1];
-  if (firstHalf.length === 1 || secondHalf.length === 1) {
-    return merge(firstHalf, secondHalf);
+
+  console.log(firstHalf, secondHalf);
+  if (array.length === 1) {
+    return array;
   } else {
+    /* if the array is not length 1, i.e. it is not already sorted, we want to
+    split it into two sub-arrays, and if they are length 1, merge them. if not,
+    keep running mergeSort until they are (they should eventually be lenght 1,
+    since we are splitting them every recursive function call)
+    */
     return merge(mergeSort(firstHalf), mergeSort(secondHalf));
   }
 }
